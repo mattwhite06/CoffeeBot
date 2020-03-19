@@ -1,0 +1,37 @@
+{
+  "name": "coffeebot",
+  "version": "0.0.1",
+  "description": "Discord bot for reminding ppl to get coffee!",
+  "author": "Matt White <mattwhite06@googlemail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattwhite06/CoffeeBot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mattwhite06/CoffeeBot/issues"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "discordapp",
+    "coffee"
+  ],
+  "main": "bot.js",
+  "directories": {
+    "lib": "./lib"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+    "discord.js": "*",
+    "eris": "^0.11.2",
+    "express": "^4.17.1",
+    "winston": "^3.2.1"
+  },
+  "homepage": "https://github.com/mattwhite06/CoffeeBot#readme",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "ISC"
+}
