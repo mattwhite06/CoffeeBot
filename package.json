@@ -2,6 +2,7 @@
   "name": "coffeebot",
   "version": "0.0.1",
   "description": "Discord bot for reminding ppl to get coffee!",
+  "main": "bot.js",
   "author": "Matt White <mattwhite06@googlemail.com>",
   "repository": 
   {
@@ -19,7 +20,6 @@
     "discordapp",
     "coffee"
   ],
-  "main": "bot.js",
   "directories": 
   {
     "lib": "./lib"
@@ -30,6 +30,10 @@
     "discord.js": "^12.0.2",
     "dotenv": "^8.2.0"
   },
+  "engines": {
+    "node": "12.16.1",
+    "npm": "6.13.4"
+  }
   "homepage": "https://github.com/mattwhite06/CoffeeBot#readme",
   "devDependencies": {},
   "scripts": {
