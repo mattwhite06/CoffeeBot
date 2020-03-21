@@ -6,7 +6,6 @@ var client = new Discord.Client();
 
 var channel = null;
 var job = null;
-var discordToken = 'NjkwMzA4Njg5NDQ5ODQ1MDc4.XnYYLw.848G53s0rUwnWgEayCJBUKVNJ9I';   // can be overwritten in .env file [DISCORD_TOKEN]
 
 client.on('ready', () => 
 {
@@ -33,14 +32,9 @@ client.on('ready', () =>
     
       client.user.setActivity(', Waiting...', { type: 'WATCHING' });
     }
-
-    if (process.env.DISCORD_TOKEN != null)
-    {
-      discordToken = process.env.DISCORD_TOKEN;
-    }
   });
 
-client.login(discordToken);
+client.login(process.env.DISCORD_TOKEN);
 
 function onCommand(msg) {
   var command  = msg.content.toLowerCase();
