@@ -4,36 +4,32 @@
   "description": "Discord bot for reminding ppl to get coffee!",
   "main": "bot.js",
   "author": "Matt White <mattwhite06@googlemail.com>",
-  "scripts": 
-  {
-	  "test": "echo \"Error: no test specified\" && exit 1",
-	  "start": "node bot.js"
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bot.js"
   },
-  "repository": 
-  {
+  "repository": {
     "type": "git",
     "url": "git+https://github.com/mattwhite06/CoffeeBot.git"
   },
-  "bugs": 
-  {
+  "bugs": {
     "url": "https://github.com/mattwhite06/CoffeeBot/issues"
   },
-  "keywords": 
-  [
+  "keywords": [
     "discord",
     "bot",
     "discordapp",
     "coffee"
   ],
-  "directories": 
-  {
+  "directories": {
     "lib": "./lib"
   },
-  "dependencies": 
-  {
+  "dependencies": {
+    "discord": "^0.8.2",
     "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
     "discord.js": "^12.0.2",
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "node-schedule": "^1.3.2"
   },
   "engines": {
     "node": "12.16.1",

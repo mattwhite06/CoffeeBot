@@ -1,29 +1,36 @@
-// Run dotenv
 require('dotenv').config();
 
 const Discord = require('discord.js');
-const client = new Discord.Client();
+var schedule = require('node-schedule');
+var client = new Discord.Client();
+var channel = null;
 
 client.on('ready', () => 
 {
     console.log(`Logged in as ${client.user.tag}!`);
-    setInterval(tick, 1000 * 60);
-});
+
+    channel = client.channels.cache.find( channel => channel.name == "general");
+    if (channel != null)
+    {
+      var rule = new schedule.RecurrenceRule();
+      rule.dayOfWeek = schedule.Range(1,5); // Mon-Fri
+      rule.hour = 15;
+      rule.minute = 0;
+
+      var j = schedule.scheduleJob(rule, function() {
+          channel.send("Coffee time? :coffee:");
+        });
+      channel.send("CoffeeBot reporting for coffee reminding duty! :coffee:");
+    }
+  });
 
 client.login(process.env.DISCORD_TOKEN);
 
 client.on('message', msg => {
-    if (msg.content === 'ping') {
-      msg.reply('coffee!!');
+    if (!msg.author.bot)
+    {
+      if (msg.content.includes('coffee')) {
+        msg.react('☕');
+     }
     }
   });
-
-function tick()
-{
-    coffeeTime();
-}
-
-function coffeeTime()
-{
-    client.channels.get("General").send("TEST");
-}
