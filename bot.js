@@ -20,7 +20,7 @@ client.on('ready', () =>
       rule.minute = 0;
 
       job = schedule.scheduleJob('CoffeeTimeReminder', rule, function() {
-          channel.send('Coffee time? :coffee:');
+          channel.send('@here Coffee time? :coffee:');
         });
 
       if (job == null)
@@ -57,9 +57,7 @@ client.on('message', msg => {
     else {
         if (msg.content.toLowerCase().includes('coffee')) {
           if (msg.author.tag === 'CitrusySteve#5217') {   // security check  :D
-            if (channel != null) {
               msg.reply('Heretic!');
-            }
           }
           else {
             msg.react('☕');
