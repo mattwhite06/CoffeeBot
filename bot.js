@@ -7,6 +7,8 @@ var client = new Discord.Client();
 var channel = null;
 var job = null;
 
+var rightNow = false;
+
 client.on('ready', () => 
 {
     console.log('Logged in as ' + client.user.tag + '!');
@@ -20,7 +22,7 @@ client.on('ready', () =>
       rule.minute = 0;
 
       job = schedule.scheduleJob('CoffeeTimeReminder', rule, function() {
-          channel.send('@here Coffee time? :coffee:');
+          coffeeTime();
         });
 
       if (job == null)
@@ -36,6 +38,17 @@ client.on('ready', () =>
 
 client.login(process.env.DISCORD_TOKEN);
 
+function coffeeTime() {
+  channel.send('@here Coffee time? :coffee:');
+  rightNow = true;    // prime check
+
+  schedule.scheduleJob('ISaidRightNow', new Date(Date.now() + 60000), function() {
+    if (rightNow) {
+      channel.send('@here I SAID RIGHT NOW!!');
+    }
+  });
+}
+
 function onCommand(msg) {
   var command  = msg.content.toLowerCase();
   if (command === '!coffeetime') {
@@ -46,11 +59,16 @@ function onCommand(msg) {
       msg.reply('There is currently no next scheduled CoffeeTime...   PANIC!');
     }
   }
+  else if(command === '!coffeenow') {
+    coffeeTime();
+  }
 }
 
 client.on('message', msg => {
   if (!msg.author.bot)
   {
+    rightNow = false;   // someone responded, no need to ask again
+
     if (msg.content.startsWith('!')) {
       onCommand(msg);
     }
