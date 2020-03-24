@@ -6,6 +6,7 @@ var client = new Discord.Client();
 
 var channel = null;
 var job = null;
+var honk = null;
 
 var rightNow = false;
 
@@ -33,6 +34,7 @@ client.on('ready', () =>
       }
     
       client.user.setActivity(', Waiting...', { type: 'WATCHING' });
+      honk = client.emojis.cache.find( emoji => emoji.name == 'honk');
     }
   });
 
@@ -80,6 +82,10 @@ client.on('message', msg => {
           else {
             msg.react('☕');
           }
+        }
+
+        if (msg.content.toLowerCase().includes('honk')) {
+          msg.react(honk.id);
         }
 
         if (msg.author.tag === 'EviK#5094')
