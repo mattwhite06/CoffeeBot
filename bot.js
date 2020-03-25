@@ -1,6 +1,15 @@
 require('dotenv').config();
 
 const Discord = require('discord.js');
+const Tenor = require('tenorjs').client({
+  'Key': process.env.TENOR_API_KEY,
+  'Filter': 'medium',
+  'Locale': 'en_GB',
+  'MediaFilter': 'minimal',
+  'DateFormat': 'D/MM/YYYY  H:mm:ss A'
+});
+
+
 var schedule = require('node-schedule');
 var client = new Discord.Client();
 
@@ -42,6 +51,7 @@ client.login(process.env.DISCORD_TOKEN);
 
 function coffeeTime() {
   channel.send('@here Coffee time? :coffee:');
+  coffeeGifMsg('coffee');
   rightNow = true;    // prime check
 
   schedule.scheduleJob('ISaidRightNow', new Date(Date.now() + 60000), function() {
@@ -51,9 +61,28 @@ function coffeeTime() {
   });
 }
 
+function coffeeGifReply(msg, args) {
+  Tenor.Search.Random(args, 1).then(Results => {
+      Results.forEach(Post => {
+          msg.reply(Post.url);
+        });
+      }).catch(console.error());
+}
+
+function coffeeGifMsg(args) {
+  if (channel != null)
+  {
+    Tenor.Search.Random(args, 1).then(Results => {
+        Results.forEach(Post => {
+          channel.send(Post.url);
+          });
+        }).catch(console.error());
+  }
+}
+
 function onCommand(msg) {
   var command  = msg.content.toLowerCase();
-  if (command === '!coffeetime') {
+  if (command.startsWith('!coffeetime')) {
     if (job != null) {
       msg.reply('The next scheduled CoffeeTime is ' + job.nextInvocation());
     }
@@ -61,8 +90,16 @@ function onCommand(msg) {
       msg.reply('There is currently no next scheduled CoffeeTime...   PANIC!');
     }
   }
-  else if(command === '!coffeenow') {
+  else if(command.startsWith('!coffeenow')) {
     coffeeTime();
+  }
+  else if(command.startsWith('!coffeegif')) {
+    var args = command.slice(11).trim();
+    if (args.length == 0) {
+      //  default to coffee gifs
+      args = 'coffee';
+    }
+    coffeeGifReply(msg, args);
   }
 }
 
