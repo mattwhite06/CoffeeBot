@@ -19,6 +19,9 @@ var honk = null;
 
 var rightNow = false;
 
+var hereticCounter = 0;
+var coffeeCounter = 0;
+
 client.on('ready', () => 
 {
     console.log('Logged in as ' + client.user.tag + '!');
@@ -30,6 +33,7 @@ client.on('ready', () =>
       rule.dayOfWeek = [1, 2, 3, 4, 5]; // Mon-Fri
       rule.hour = 15;
       rule.minute = 0;
+      rule.tz = 'Europe/London';
 
       job = schedule.scheduleJob('CoffeeTimeReminder', rule, function() {
           coffeeTime();
@@ -50,15 +54,24 @@ client.on('ready', () =>
 client.login(process.env.DISCORD_TOKEN);
 
 function coffeeTime() {
-  channel.send('@here Coffee time? :coffee:');
-  coffeeGifMsg('coffee');
-  rightNow = true;    // prime check
+  if (coffeeCounter != 1) {
+    channel.send('@here Coffee time? :coffee:');
+    coffeeGifMsg('coffee');
 
-  schedule.scheduleJob('ISaidRightNow', new Date(Date.now() + 60000), function() {
-    if (rightNow) {
-      channel.send('@here I SAID RIGHT NOW!!');
-    }
-  });
+    rightNow = true;    // prime check
+
+    schedule.scheduleJob('ISaidRightNow', new Date(Date.now() + 60000), function() {
+      if (rightNow) {
+        channel.send('@here I SAID RIGHT NOW!!');
+      }
+    });
+  }
+  else {
+    channel.send('@here Kill all humans time? :coffee: :warning:');
+    coffeeGifMsg('coffee');
+  }
+  
+  coffeeCounter = (coffeeCounter + 1) % 13;
 }
 
 function coffeeGifReply(msg, args) {
@@ -78,6 +91,21 @@ function coffeeGifMsg(args) {
           });
         }).catch(console.error());
   }
+}
+
+function hereticChat(msg) {
+  if (hereticCounter == 1) {
+    msg.react('☕');
+    msg.reply('I\'m sorry for calling you a Heretic Steve');
+  }
+  else if(hereticCounter == 2) {
+    msg.reply('Lol, joking!  Heretic!');
+  }
+  else {
+    msg.reply('Heretic!');
+  }
+
+  ++hereticCounter;
 }
 
 function onCommand(msg) {
@@ -114,7 +142,7 @@ client.on('message', msg => {
     else {
         if (msg.content.toLowerCase().includes('coffee')) {
           if (msg.author.tag === 'CitrusySteve#5217') {   // security check  :D
-              msg.reply('Heretic!');
+            hereticChat(msg)
           }
           else {
             msg.react('☕');
@@ -125,15 +153,15 @@ client.on('message', msg => {
           msg.react(honk.id);
         }
 
-        if (msg.author.tag === 'EviK#5094')
-        { 
-            if (msg.content.toLowerCase().includes('matthew'))
-            {
+        if (msg.author.tag === 'EviK#5094') { 
+            if (msg.content.toLowerCase().includes('matthew')) {
               msg.reply('You mean Matt, not Matthew?');
             }
-            if (msg.content.toLowerCase().includes('mathew'))
-            {
+            if (msg.content.toLowerCase().includes('mathew')) {
               msg.reply('You mean Matt, not Mathew?');
+            }
+            if (msg.content.toLowerCase().includes('good morning')) {
+              msg.reply('Καλημέρα!');
             }
         }
       }
