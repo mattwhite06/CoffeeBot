@@ -93,19 +93,31 @@ function coffeeGifMsg(args) {
   }
 }
 
-function hereticChat(msg) {
-  if (hereticCounter == 1) {
-    msg.react('☕');
-    msg.reply('I\'m sorry for calling you a Heretic Steve');
-  }
-  else if(hereticCounter == 2) {
-    msg.reply('Lol, joking!  Heretic!');
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
+function piPe() {
+  var r = getRandomInt(2);
+  if (r == 0) {
+    return 'pi';
   }
   else {
-    msg.reply('Heretic!');
+    return 'pe';
+  }
+}
+
+function pickledPeppers(msg) {
+  var correct = 'Peter Piper picked a peck of pickled peppers';
+  var attempt = 'Peter Piper ' + piPe() + 'cked a ' + piPe() + 'ck of ' + piPe() + 'ckled ' + piPe() + 'ppers';
+  if (attempt === correct) {
+    attempt += '   :partying_face:!';
+  }
+  else {
+    attempt += '...  :neutral_face:';
   }
 
-  ++hereticCounter;
+  msg.reply(attempt);
 }
 
 function onCommand(msg) {
@@ -129,6 +141,10 @@ function onCommand(msg) {
     }
     coffeeGifReply(msg, args);
   }
+  else if(command.startsWith('!peterpiper') || 
+          command.startsWith('!pickledpeppers')) {
+    pickledPeppers(msg);
+  }
 }
 
 client.on('message', msg => {
@@ -140,9 +156,35 @@ client.on('message', msg => {
       onCommand(msg);
     }
     else {
-        if (msg.content.toLowerCase().includes('coffee')) {
-          if (msg.author.tag === 'CitrusySteve#5217') {   // security check  :D
-            hereticChat(msg)
+      if (msg.content.toLowerCase().includes('tea')) {
+        if (msg.author.tag === 'CitrusySteve#5217') {  
+          switch(hereticCounter)
+          {
+            case 0:
+              msg.react('😐');
+              msg.reply('Don\'t you mean coffee, Steve?');
+              break;
+            case 1:
+              msg.react('😐');
+              msg.reply('This isn\'t the place for tea, Steve');
+              break;
+            case 2:
+              msg.react('😡');
+              msg.reply('...');  
+              break;        
+            case 3:
+              msg.react('🤬');
+              break;
+            default:
+          }
+
+          ++hereticCounter;
+        }
+      }
+
+      if (msg.content.toLowerCase().includes('coffee') || msg.content.toLowerCase().includes('cofee')) {
+        if (msg.author.tag === 'CitrusySteve#5217' && hereticCounter > 3) {   // security check  :D
+            msg.reply('Heretic!');
           }
           else {
             msg.react('☕');
@@ -162,6 +204,10 @@ client.on('message', msg => {
             }
             if (msg.content.toLowerCase().includes('good morning')) {
               msg.reply('Καλημέρα!');
+            }
+            if (  msg.content.toLowerCase().includes('peter piper') ||
+                  msg.content.toLowerCase().includes('pickled peppers')) {
+              pickledPeppers(msg);
             }
         }
       }
