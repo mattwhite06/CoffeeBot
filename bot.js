@@ -8,6 +8,7 @@ const Tenor = require('tenorjs').client({
   'MediaFilter': 'minimal',
   'DateFormat': 'D/MM/YYYY  H:mm:ss A'
 });
+const axios = require('axios');
 
 
 var schedule = require('node-schedule');
@@ -21,6 +22,8 @@ var rightNow = false;
 
 var hereticCounter = 0;
 var coffeeCounter = 0;
+
+var translateOn = true;
 
 client.on('ready', () => 
 {
@@ -145,6 +148,46 @@ function onCommand(msg) {
           command.startsWith('!pickledpeppers')) {
     pickledPeppers(msg);
   }
+  else if(command.startsWith('!coffeetranslate')) {
+    if (translateOn) {
+      msg.reply('Coffee Translate is now Off.');
+    }
+    else {
+      msg.reply('Coffee translate is now On.');
+    }
+
+    translateOn = !translateOn;
+  }
+}
+
+function fixLangStr(lang) {
+  switch(lang) {
+    case 'el':
+      return 'gr';
+    default:
+      return lang;
+  }
+}
+
+function onTranslate(msg) {
+  if (msg.content.toLowerCase().includes('yo ho ho') ||
+      msg.content.toLowerCase().startsWith('yarr')) {
+        msg.reply(':pirate_flag:   Hello!');
+        return;
+  }
+
+  axios.get(process.env.YANDEX_TRANSLATE_URL, {
+    params: {
+      key: process.env.YANDEX_TRANSLATE_API_KEY,
+      text: msg.content,
+      lang: 'en'
+    }
+  }).then(res => {
+    if (res.data.text[0] !== msg.content) {
+      var lang = fixLangStr(res.data.lang.split('-')[0]);
+      msg.reply(':flag_'+ lang + ':   ' + res.data.text[0]);
+    }
+  });
 }
 
 client.on('message', msg => {
@@ -156,6 +199,10 @@ client.on('message', msg => {
       onCommand(msg);
     }
     else {
+      if (translateOn) {
+        onTranslate(msg);
+      }
+      
       if (msg.content.toLowerCase().includes('tea')) {
         if (msg.author.tag === 'CitrusySteve#5217') {  
           switch(hereticCounter)
