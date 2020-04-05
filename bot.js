@@ -8,11 +8,11 @@ const Tenor = require('tenorjs').client({
   'MediaFilter': 'minimal',
   'DateFormat': 'D/MM/YYYY  H:mm:ss A'
 });
-const axios = require('axios');
-
+const {Translate} = require('@google-cloud/translate').v2;
 
 var schedule = require('node-schedule');
 var client = new Discord.Client();
+var translate = new Translate();
 
 var channel = null;
 var job = null;
@@ -137,7 +137,7 @@ function onCommand(msg) {
     coffeeTime();
   }
   else if(command.startsWith('!coffeegif')) {
-    var args = command.slice(11).trim();
+    let args = command.slice(11).trim();
     if (args.length == 0) {
       //  default to coffee gifs
       args = 'coffee';
@@ -153,10 +153,30 @@ function onCommand(msg) {
       msg.reply('Coffee Translate is now Off.');
     }
     else {
-      msg.reply('Coffee translate is now On.');
+      msg.reply('Coffee Translate is now On.');
     }
 
     translateOn = !translateOn;
+  }
+  else if(command.startsWith('!translate ')) {
+    let cmdLine = command.slice(11).trim();
+    let splitIdx = cmdLine.indexOf(' ');
+    if (splitIdx != -1) {
+      let lang = cmdLine.substring(0, splitIdx).trim();
+      let phrase = cmdLine.slice(splitIdx).trim();
+      onTranslate(msg, phrase, lang, true);
+    }
+  }
+  else if(command.startsWith('!languages')) {
+    translate.getLanguages().then( res => {
+      let rData = res[1];
+
+      let langStr = '';
+      rData.data.languages.forEach(l => {
+        langStr += l.language + ': ' + l.name + ',  ';
+      });
+      msg.reply(langStr);
+    });
   }
 }
 
@@ -164,30 +184,41 @@ function fixLangStr(lang) {
   switch(lang) {
     case 'el':
       return 'gr';
+    case 'en':
+      return 'gb';
     default:
       return lang;
   }
 }
 
-function onTranslate(msg) {
-  if (msg.content.toLowerCase().includes('yo ho ho') ||
-      msg.content.toLowerCase().startsWith('yarr')) {
-        msg.reply(':pirate_flag:   Hello!');
-        return;
+function onTranslate(msg, msgTxt, target, useTargetFlag) {
+  let transPhrase = msgTxt;
+  let pirateHello = transPhrase.toLowerCase().includes('yo ho ho') ||
+                    transPhrase.toLowerCase().startsWith('yarr');
+  if (pirateHello) {
+    transPhrase = "Hello!";
   }
 
-  axios.get(process.env.YANDEX_TRANSLATE_URL, {
-    params: {
-      key: process.env.YANDEX_TRANSLATE_API_KEY,
-      text: msg.content,
-      lang: 'en'
-    }
-  }).then(res => {
-    if (res.data.text[0] !== msg.content) {
-      var lang = fixLangStr(res.data.lang.split('-')[0]);
-      msg.reply(':flag_'+ lang + ':   ' + res.data.text[0]);
-    }
-  });
+  translate.translate(transPhrase, target)
+    .then( res => {
+      if (res.length > 0) {
+        let rData = res[1];
+        if (rData.data.translations.length > 0) {
+          let tData = rData.data.translations[0];
+          if (tData.translatedText !== transPhrase || pirateHello) {
+            let lang = useTargetFlag ? fixLangStr(target) : fixLangStr(tData.detectedSourceLanguage);
+            let flagTxt = pirateHello ? ':pirate_flag:' : ':flag_'+ lang + ':';
+            msg.reply( flagTxt + '  ' + tData.translatedText);
+          }
+        }
+      }  
+    })
+    .catch(error => {
+      console.log(error);
+      if (error.code == 400) {
+        msg.reply('Sorry, I don\'t understand the language code ' + target);
+      }
+    });
 }
 
 client.on('message', msg => {
@@ -200,7 +231,7 @@ client.on('message', msg => {
     }
     else {
       if (translateOn) {
-        onTranslate(msg);
+        onTranslate(msg, msg.content, 'en', false);
       }
       
       if (msg.content.toLowerCase().includes('tea')) {
