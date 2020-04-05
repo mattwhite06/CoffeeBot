@@ -8,11 +8,13 @@ const Tenor = require('tenorjs').client({
   'MediaFilter': 'minimal',
   'DateFormat': 'D/MM/YYYY  H:mm:ss A'
 });
+
+const projectId = process.env.GOOGLE_PROJECT_NAME;
 const {Translate} = require('@google-cloud/translate').v2;
 
 var schedule = require('node-schedule');
 var client = new Discord.Client();
-var translate = new Translate();
+var translate = new Translate({projectId});
 
 var channel = null;
 var job = null;
