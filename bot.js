@@ -22,7 +22,7 @@ var honk = null;
 
 var rightNow = false;
 
-var hereticCounter = 0;
+var hereticCounter = 1;
 var coffeeCounter = 0;
 
 var translateOn = true;
@@ -59,7 +59,7 @@ client.on('ready', () =>
 client.login(process.env.DISCORD_TOKEN);
 
 function coffeeTime() {
-  if (coffeeCounter != 1) {
+  if (coffeeCounter != 3) {
     channel.send('@here Coffee time? :coffee:');
     coffeeGifMsg('coffee');
 
@@ -76,7 +76,7 @@ function coffeeTime() {
     coffeeGifMsg('coffee');
   }
   
-  coffeeCounter = (coffeeCounter + 1) % 13;
+  coffeeCounter = (coffeeCounter + 1) % 11;
 }
 
 function coffeeGifReply(msg, args) {
@@ -207,7 +207,7 @@ function onTranslate(msg, msgTxt, target, useTargetFlag) {
         let rData = res[1];
         if (rData.data.translations.length > 0) {
           let tData = rData.data.translations[0];
-          if (tData.translatedText !== transPhrase || pirateHello) {
+          if (tData.translatedText.toLowerCase() !== transPhrase.toLowerCase() || pirateHello) {
             let lang = useTargetFlag ? fixLangStr(target) : fixLangStr(tData.detectedSourceLanguage);
             let flagTxt = pirateHello ? ':pirate_flag:' : ':flag_'+ lang + ':';
             msg.reply( flagTxt + '  ' + tData.translatedText);
