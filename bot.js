@@ -37,7 +37,7 @@ client.on('ready', () =>
       var rule = new schedule.RecurrenceRule();
       rule.dayOfWeek = [1, 2, 3, 4, 5]; // Mon-Fri
       rule.hour = 15;
-      rule.minute = 30;
+      rule.minute = 0;
       rule.tz = 'Europe/London';
 
       job = schedule.scheduleJob('CoffeeTimeReminder', rule, function() {
