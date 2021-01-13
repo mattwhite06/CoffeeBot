@@ -61,7 +61,7 @@ client.login(process.env.DISCORD_TOKEN);
 function coffeeTime() {
   if (coffeeCounter != 3) {
     channel.send('@here Coffee time? :coffee:');
-    coffeeGifMsg('christmas coffee');
+    coffeeGifMsg('coffee');
 
     rightNow = true;    // prime check
 
