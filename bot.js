@@ -13,7 +13,7 @@ const projectId = process.env.GOOGLE_PROJECT_NAME;
 const {Translate} = require('@google-cloud/translate').v2;
 
 var schedule = require('node-schedule');
-var client = new Discord.Client();
+var client = new Discord.Client({ intents: ['GUILD_MEMBERS', 'GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS'});
 var translate = new Translate({projectId});
 
 var channel = null;
