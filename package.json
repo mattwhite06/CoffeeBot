@@ -34,8 +34,8 @@
     "tenorjs": "^1.0.7"
   },
   "engines": {
-    "node": "12.16.1",
-    "npm": "6.13.4"
+    "node": "v16.11.1",
+    "npm": "8.0.0"
   },
   "homepage": "https://github.com/mattwhite06/CoffeeBot#readme"
 }
