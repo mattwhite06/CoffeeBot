@@ -59,6 +59,7 @@ client.on('ready', () =>
 client.login(process.env.DISCORD_TOKEN);
 
 function coffeeTime() {
+  /*
   if (coffeeCounter != 3) {
     channel.send('@here Coffee time? :coffee:');
     coffeeGifMsg('coffee');
@@ -77,6 +78,7 @@ function coffeeTime() {
   }
   
   coffeeCounter = (coffeeCounter + 1) % 11;
+  */
 }
 
 function coffeeGifReply(msg, args) {
