@@ -105,3 +105,4 @@ dist
 
 # Google JSON
 CoffeeBot.json
+google-credentials.json
