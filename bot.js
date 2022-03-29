@@ -59,7 +59,6 @@ client.on('ready', () =>
 client.login(process.env.DISCORD_TOKEN);
 
 function coffeeTime() {
-  /*
   if (coffeeCounter != 3) {
     channel.send('@here Coffee time? :coffee:');
     coffeeGifMsg('coffee');
@@ -78,7 +77,6 @@ function coffeeTime() {
   }
   
   coffeeCounter = (coffeeCounter + 1) % 11;
-  */
 }
 
 function coffeeGifReply(msg, args) {
@@ -202,6 +200,7 @@ function onTranslate(msg, msgTxt, target, useTargetFlag) {
   if (pirateHello) {
     transPhrase = "Hello!";
   }
+  let SofieCheck = transPhrase.toLowerCase().includes('sofie');
 
   translate.translate(transPhrase, target)
     .then( res => {
@@ -212,7 +211,14 @@ function onTranslate(msg, msgTxt, target, useTargetFlag) {
           if (tData.translatedText.toLowerCase() !== transPhrase.toLowerCase() || pirateHello) {
             let lang = useTargetFlag ? fixLangStr(target) : fixLangStr(tData.detectedSourceLanguage);
             let flagTxt = pirateHello ? ':pirate_flag:' : ':flag_'+ lang + ':';
-            msg.reply( flagTxt + '  ' + tData.translatedText);
+
+            let endMsg = tData.translatedText;
+            if (SofieCheck)
+            {
+              endMsg = endMsg.replace(/Sophie/g, 'Sofie');
+              endMsg = endMsg.replace(/sophie/g, 'sofie');
+            }
+            msg.reply( flagTxt + '  ' + endMsg);
           }
         }
       }  
